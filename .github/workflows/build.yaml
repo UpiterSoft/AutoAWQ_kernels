@@ -39,14 +39,14 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-latest]
-        pyver: ["3.9", "3.10", "3.11", "3.12"]
-        cuda: ["12.4.1"]
+        os: [windows-latest]
+        pyver: ["3.11"]
+        cuda: ["12.4"]
     defaults:
       run:
         shell: pwsh
     env:
-      PYPI_CUDA_VERSION: "12.4.1"
+      PYPI_CUDA_VERSION: "12.4"
       CUDA_VERSION: ${{ matrix.cuda }}
 
     steps:
@@ -91,7 +91,7 @@ jobs:
           # Install torch
           $cudaVersion = $env:CUDA_VERSION.Replace('.', '')
           $cudaVersionPytorch = $cudaVersion.Substring(0, $cudaVersion.Length - 1)
-          $pytorchVersion = "torch==2.5.1"
+          $pytorchVersion = "torch==2.3.1"
           python -m pip install --upgrade --no-cache-dir $pytorchVersion+cu$cudaVersionPytorch --index-url https://download.pytorch.org/whl/cu$cudaVersionPytorch
           python -m pip install build setuptools wheel ninja
 
