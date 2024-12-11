@@ -6,20 +6,20 @@ on:
       - "v*"
 
 jobs:
-  # release:
-  #   # Retrieve tag and create release
-  #   name: Create Release
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
+  release:
+    # Retrieve tag and create release
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-  #     - name: Extract branch info
-  #       shell: bash
-  #       run: |
-  #         echo "release_tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Extract branch info
+        shell: bash
+        run: |
+          echo "release_tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
   #     - name: Create Release
   #       id: create_release
@@ -43,7 +43,7 @@ jobs:
   build_cuda_wheels:
     name: Build AWQ with CUDA
     runs-on: ${{ matrix.os }}
-    # needs: release
+    needs: release
 
     strategy:
       matrix:
