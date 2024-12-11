@@ -30,7 +30,15 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           script: |
             const script = require('.github/workflows/scripts/github_create_release.js')
-            await script(github, context, core)
+            try {
+              await script(github, context, core)
+            } catch (error) {
+              if (error.message.includes('already_exists')) {
+                console.log('Release already exists, continuing...')
+              } else {
+                throw error
+              }
+            }
 
   build_cuda_wheels:
     name: Build AWQ with CUDA
