@@ -47,7 +47,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-2019]
         pyver: ["3.11"]
         cuda: ["12.1.0"]
     defaults:
