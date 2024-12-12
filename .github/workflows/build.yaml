@@ -21,24 +21,25 @@ jobs:
         run: |
           echo "release_tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-  #     - name: Create Release
-  #       id: create_release
-  #       uses: "actions/github-script@v6"
-  #       env:
-  #         RELEASE_TAG: ${{ env.release_tag }}
-  #       with:
-  #         github-token: "${{ secrets.GITHUB_TOKEN }}"
-  #         script: |
-  #           const script = require('.github/workflows/scripts/github_create_release.js')
-  #           try {
-  #             await script(github, context, core)
-  #           } catch (error) {
-  #             if (error.message.includes('already_exists')) {
-  #               console.log('Release already exists, continuing...')
-  #             } else {
-  #               throw error
-  #             }
-  #           }
+      - name: Check and Delete Existing Release
+        run: |
+          existing_release_id=$(gh release view "${{ env.release_tag }}" --json id -q '.id' || echo "null")
+          if [ "$existing_release_id" != "null" ]; then
+            gh release delete "${{ env.release_tag }}" --yes
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: "actions/github-script@v6"
+        env:
+          RELEASE_TAG: ${{ env.release_tag }}
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            const script = require('.github/workflows/scripts/github_create_release.js')
+            await script(github, context, core)
 
   build_cuda_wheels:
     name: Build AWQ with CUDA
